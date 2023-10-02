@@ -18,6 +18,9 @@ export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query( async ({ ctx }) => {
     const posts = await ctx.db.post.findMany({
     take: 100,
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   const users = (
@@ -46,5 +49,26 @@ export const postsRouter = createTRPCRouter({
         },
       };
     }});
+  }),
+
+
+
+  create: publicProcedure
+    .input(
+      z.object({
+        content: z.string().emoji().min(1).max(280),
+    })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // currentUser conflicts with authodId
+    const authorId = ctx.userId!;
+
+    const post = await ctx.db.post.create({
+      data: {
+        authorId,
+        content: input.content, 
+      },
+    });
+    return post;
   }),
 });

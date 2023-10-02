@@ -8,6 +8,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
+import { LoadingPage } from "~/components/loading";
 
 dayjs.extend(relativeTime);
 
@@ -63,15 +64,33 @@ const PostView = (props: PostWithUser) => {
   );
 };
 
-const Home: NextPage = () => {
+const Feed = () => {
 
-  const user = useUser();
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
 
-  const { data, isLoading } = api.posts.getAll.useQuery();
-
-  if (isLoading) return <div>Loading...</div>;
+  if (postsLoading) return <LoadingPage />;
 
   if (!data) return <div>Something went wrong</div>;
+
+  return (
+    <div className = "flex flex-col">
+      {[...data, ...data]?.map((fullPost) => (
+        <PostView {...fullPost} key={fullPost.post.id} />
+      ))};
+    </div>
+  );
+
+};
+
+const Home: NextPage = () => {
+
+  const { isLoaded: userLoaded, isSignedIn } = useUser();
+
+  api.posts.getAll.useQuery();
+
+  // return empty div if user is not loaded
+  if (!userLoaded) return <div />;
+
 
   return (
     <>
@@ -83,18 +102,14 @@ const Home: NextPage = () => {
       <main className="flex justify-center h-screen">
         <div className= " bg-orange-300/70 border-black w-full h-full border-x md:max-w-2xl">
           <div className = "border-b border-black p-4 flex">
-            {!user.isSignedIn && (
+            {!isSignedIn && (
             <div className = "flex justify-center">
               <SignInButton />
             </div>
             )}
-            {user.isSignedIn && <CreatePostWizard />}
+            {isSignedIn && <CreatePostWizard />}
           </div>
-          <div className = "flex flex-col">
-            {[...data, ...data]?.map((fullPost) => (
-              <PostView {...fullPost} key={fullPost.post.id} />
-            ))};
-          </div>
+          <Feed />
         </div>
       </main>
     </>

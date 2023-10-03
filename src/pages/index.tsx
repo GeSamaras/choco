@@ -8,8 +8,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
-import { LoadingPage } from "~/components/loading";
+import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 
@@ -25,6 +26,14 @@ const CreatePostWizard = () => {
     onSuccess: () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content;
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0]);
+      } else {
+      toast.error("Something went wrong");
+      }
     },
   });
 
@@ -46,13 +55,30 @@ const CreatePostWizard = () => {
       type="text"
       value={input}
       onChange={(e) => setInput(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (input !== ""){
+            mutate({ content: input });
+          }
+        }
+      }}
       disabled={isPosting}
       />
-      <button onClick={() => 
+      {input !== "" && !isPosting && (
+        <button onClick={() => 
         mutate({ content: input })}
-        className="bg-orange-800 text-white px-4 py-2 rounded-md">
+        className="bg-orange-800 text-white px-4 py-2 rounded-md"
+        >
           Post
       </button>
+      )}
+
+      {isPosting && ( 
+        <div className="flex justify-center items-center">
+          <LoadingSpinner />
+        </div>
+      )}
     </div>
   );
 }
@@ -64,7 +90,6 @@ const PostView = (props: PostWithUser) => {
   return (
     <div key ={post.id} className="border-b border-black p-4 flex gap-3 ">
       <Image 
-        //imageUrl and user icon not working on posts
         src={author.profilePictureUrl}
         alt={`@${author.username} profile image`}
         className="h-16 w-16 rounded-full"

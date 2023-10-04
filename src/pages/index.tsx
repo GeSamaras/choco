@@ -11,6 +11,7 @@ import Image from "next/image";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { PageLayout } from "~/components/layout";
 
 dayjs.extend(relativeTime);
 
@@ -144,20 +145,17 @@ const Home: NextPage = () => {
 
 
   return (
-    
-      <main className="flex justify-center h-screen">
-        <div className= " bg-orange-300/70 border-black w-full h-full border-x md:max-w-2xl">
-          <div className = "border-b border-black p-4 flex">
-            {!isSignedIn && (
-            <div className = "flex justify-center">
-              <SignInButton />
-            </div>
-            )}
-            {isSignedIn && <CreatePostWizard />}
-          </div>
-          <Feed />
+    <PageLayout>
+      <div className = "border-b border-black p-4 flex">
+        {!isSignedIn && (
+        <div className = "flex justify-center">
+          <SignInButton />
         </div>
-      </main>
+        )}
+        {isSignedIn && <CreatePostWizard />}
+      </div>
+      <Feed />
+    </PageLayout>
   );
 };
 export default Home;

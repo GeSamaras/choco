@@ -5,10 +5,31 @@ import type { GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsTy
 import { Infer } from "next/dist/compiled/superstruct";
 import { PageLayout } from "~/components/layout";
 import Image from "next/image";
+import { LoadingPage } from "~/components/loading";
+import { PostView } from "~/components/postview";
+import { generateSSGHelpers } from "~/server/helpers/ssgHelper";
 
-const ProfilePage: NextPage = () => {
+
+const ProfileFeed = (props: { userId: string}) => {
+  const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
+    userId: props.userId,
+  });
+  if ( isLoading ) return <LoadingPage />;
+
+  if (!data || data.length === 0) return <div>No posts</div>;
+
+  return ( 
+  <div className="flex flex-col">
+    {data.map((fullPost) => (
+      <PostView {...fullPost} key={fullPost.post.id} />
+    ))}
+  </div>
+  );
+};
+
+const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data, isLoading } = api.profile.getUserByUsername.useQuery({
-    username: "test",
+    username,
   });
   if (isLoading) {return <div>Loading...</div>;}
   if (!data) {return <div>Not found</div>;}
@@ -19,7 +40,7 @@ const ProfilePage: NextPage = () => {
         <title>Profile</title>
       </Head>
       <PageLayout>
-        <div className="h-48 border-b border-slate-300 bg-slate-400">
+        <div className="relative h-36 border-b border-slate-300 bg-gradient-to-r from-yellow-500 to-amber-600">
           <Image
             src={data.profilePictureUrl} 
             alt="Profile image" 
@@ -30,41 +51,38 @@ const ProfilePage: NextPage = () => {
           <div className="h-[64px]"></div>
           <div className="p-4 text-2xl font-bold">{`@${data.username ?? ""}`}</div>
         </div>
-        <div className="w-full border-b border-slate-400"></div>
+        <div className="w-full border-b border-amber-400"></div>
+        <ProfileFeed userId={data.id} />
       </PageLayout>
     </>
   );
 };
 
 
-//TODO SSG helpers, dehydrate, StaticProps, and SSH
-//https://trpc.io/docs/client/nextjs/ssg 
-//https://trpc.io/docs/client/nextjs/server-side-helpers
-//https://github.com/t3dotgg/chirp/blob/main/src/pages/%5Bslug%5D.tsx
-
-/*
 export const getStaticProps: GetStaticProps = async (context) => {
-  const ssg = createProxySSGHelpers({
-    router: context,
-    ctx: {},
-    client: api,
-  });
-const slug = context.param?.slug;
-if (typeof slug !== "string") throw new Error("no slug");
+  const ssg = generateSSGHelpers();
 
-await ssg.profile.getUserByUsername.prefetch({ usernmae: slug})
-  return{
+  const slug = context.params?.slug;
+
+  if (typeof slug !== "string") throw new Error("no slug");
+
+  const username = slug.replace("@", "");
+
+  await ssg.profile.getUserByUsername.prefetch({ username });
+
+  return {
     props: {
-      trpcState: dehydrate(),
+      trpcState: ssg.dehydrate(),
       username,
-    }
-  }
+    },
+  };
+};
 
-export const getStaticPaths = async () => {
+export const getStaticPaths = () => {
   return { paths: [], fallback: "blocking" };
-}
+};
 
 
-*/
+
 
 export default ProfilePage;

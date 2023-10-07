@@ -1,8 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
-import type { GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType } from "next";
-import { Infer } from "next/dist/compiled/superstruct";
+import type { GetStaticProps } from "next";
 import { PageLayout } from "~/components/layout";
 import Image from "next/image";
 import { LoadingPage } from "~/components/loading";

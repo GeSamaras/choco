@@ -1,7 +1,5 @@
-import { SignIn, SignInButton, useUser } from "@clerk/nextjs";
-import { Sign } from "crypto";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";

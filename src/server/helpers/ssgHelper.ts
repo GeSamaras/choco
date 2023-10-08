@@ -4,7 +4,7 @@ import superjson from "superjson";
 import { db } from "~/server/db";
 
 export const generateSSGHelpers = () =>
-    createServerSideHelpers({
+  createServerSideHelpers({
     router: appRouter,
     ctx: { db, userId: null },
     transformer: superjson, // optional - adds superjson serialization

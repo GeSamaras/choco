@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply h-14 bg-gradient-to-r from-amber-700 to-orange-600/70;
+    @apply h-14 bg-black;
    
     overscroll-behavior: none;
 }

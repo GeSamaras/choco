@@ -36,10 +36,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   return (
     <>
       <Head>
-        <title>Profile</title>
+        <title>{data.username}</title>
       </Head>
       <PageLayout>
-        <div className="relative h-36 border-b border-slate-300 bg-gradient-to-r from-yellow-500 to-amber-600">
+        <div className="relative h-36  border-slate-600">
           <Image
             src={data.profilePictureUrl} 
             alt="Profile image" 

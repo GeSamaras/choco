@@ -11,6 +11,8 @@ const addUserDataToPosts = async (posts: Post[]) => {
   const users = (
     await clerkClient.users.getUserList({
       userId: posts.map((post) => post.authorId),
+      // TODO: pagination/infinite scroll
+      // https://trpc.io/docs/client/react/useInfiniteQuery
       limit: 100,
     })
   ).map(filterUserForClient);

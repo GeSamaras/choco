@@ -12,11 +12,14 @@ import toast from "react-hot-toast";
 import { PageLayout } from "~/components/layout";
 
 dayjs.extend(relativeTime);
+// TODO: metadata image generation with vercel Open Graph
+// https://vercel.com/docs/functions/edge-functions/og-image-generation#usage
 
 const CreatePostWizard = () => {
 
   const { user } = useUser();
 
+  // TODO: swap useState for useInput hook or something like React Hook Form
   const [ input, setInput ] = useState("");
 
   const ctx = api.useContext();
@@ -50,7 +53,7 @@ const CreatePostWizard = () => {
         height={56}
       />
       <input placeholder="type some emojis!" 
-      className="grow bg-transparent outline-none text-orange-800"
+      className="grow bg-transparent outline-none"
       type="text"
       value={input}
       onChange={(e) => setInput(e.target.value)}
@@ -67,7 +70,7 @@ const CreatePostWizard = () => {
       {input !== "" && !isPosting && (
         <button onClick={() => 
         mutate({ content: input })}
-        className="bg-orange-800 text-white px-4 py-2 rounded-md"
+        className="bg-slate-600 text-white px-4 py-2 rounded-md"
         >
           Post
       </button>
@@ -96,7 +99,7 @@ const PostView = (props: PostWithUser) => {
         height={56}
         />
         <div className="flex flex-col">
-          <div className="flex text-orange-900 gap-2 font-semibold ">
+          <div className="flex text-slate-300 gap-2 font-semibold ">
             <Link href={`/@${author.username}`}>  
               <span>
                 {`@${author.username}`}
@@ -144,7 +147,7 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
-      <div className = "border-b border-black p-4 flex">
+      <div className = "border-b border-slate-400 p-4 flex">
         {!isSignedIn && (
         <div className = "flex justify-center">
           <SignInButton />

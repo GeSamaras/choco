@@ -6,7 +6,9 @@ import { PageLayout } from "~/components/layout";
 import { PostView } from "~/components/postview";
 import { generateSSGHelpers } from "~/server/helpers/ssgHelper";
 
-
+/*
+TODO: literally doesn't work. I don't know why. I'm not sure if it's because of the way I am. TRPC stop being so cringe
+*/
 
 
 const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {

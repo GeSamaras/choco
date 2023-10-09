@@ -8,6 +8,9 @@ import { LoadingPage } from "~/components/loading";
 import { PostView } from "~/components/postview";
 import { generateSSGHelpers } from "~/server/helpers/ssgHelper";
 
+/*
+TODO: profile image out of place, header space not rendering lmfaooo
+*/
 
 const ProfileFeed = (props: { userId: string}) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
@@ -39,17 +42,17 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <title>{data.username}</title>
       </Head>
       <PageLayout>
-        <div className="relative h-36  border-slate-600">
+        <div className="relative h-36  border-slate-600 bg-slate-600">
           <Image
             src={data.profilePictureUrl} 
             alt="Profile image" 
             width={128}
             height={128}
-            className="rounded-full absolute bottom-0 left-0 -mb-[64px] ml-4 border-4 border-red-700"
+            className="rounded-full absolute bottom-0 left-0 -mb-[64px] ml-4 border-4 border-slate-700"
           />
+        </div>
           <div className="h-[64px]"></div>
           <div className="p-4 text-2xl font-bold">{`@${data.username ?? ""}`}</div>
-        </div>
         <div className="w-full border-b border-amber-400"></div>
         <ProfileFeed userId={data.id} />
       </PageLayout>

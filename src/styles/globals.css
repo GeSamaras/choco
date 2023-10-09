@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply h-14 bg-black;
+    @apply h-14 bg-black text-slate-100;
    
     overscroll-behavior: none;
 }

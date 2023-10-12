@@ -20,7 +20,7 @@ export const PostView = (props: PostWithUser) => {
         height={56}
         />
         <div className="flex flex-col">
-          <div className="flex text-orange-900 gap-2 font-semibold ">
+          <div className="flex text-slate-300 gap-2 font-semibold ">
             <Link href={`/@${author.username}`}>  
               <span>
                 {`@${author.username}`}
